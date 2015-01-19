@@ -8,7 +8,8 @@ from .forms import ProfileForm, TalkForm, CommentForm, PresenterCommentForm
 
 @talks.route('/')
 def index():
-    return render_template('talks/index.html')
+    talks = Talk.all();
+    return render_template('talks/index.html', talks=talks)
 
 
 @talks.route('/user/<username>')
@@ -41,16 +42,16 @@ def new_talk():
     return render_template('talks/edit_talk.html', form=form)
 
 
-@talks.route('/talk/<int:id>', methods=['GET', 'POST'])
+@talks.route('/talk/<id>', methods=['GET', 'POST'])
 def talk(id):
-    talk = Talk() 
+    talk = Talk.load(id) 
     return render_template('talks/talk.html', talk=talk)
 
 
-@talks.route('/edit/<int:id>', methods=['GET', 'POST'])
+@talks.route('/edit/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_talk(id):
-    talk = Talk() 
+    talk = Talk.load(id)
     form = TalkForm()
     if form.validate_on_submit():
         form.to_model(talk)
